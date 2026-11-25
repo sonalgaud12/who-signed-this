@@ -1,0 +1,8 @@
+# ko builds are reproducible: same source + same base digest => same image digest.
+# That is what lets the demo show ONE digest signed by two different workflows.
+# Pin the base by digest, or the two builds will drift apart.
+#   crane digest cgr.dev/chainguard/static:latest
+defaultBaseImage: cgr.dev/chainguard/static@sha256:REPLACE_ME
+defaultPlatforms:
+  - linux/amd64
+  - linux/arm64

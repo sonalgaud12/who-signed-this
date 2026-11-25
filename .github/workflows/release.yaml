@@ -1,0 +1,41 @@
+# THE TRUSTED PATH. The only identity the Kyverno policy accepts:
+#   https://github.com/OWNER/REPO/.github/workflows/release.yaml@refs/heads/main
+#   issued by https://token.actions.githubusercontent.com, trigger = push
+name: release
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write   # lets the job get a GitHub OIDC token -> Fulcio cert. No keys anywhere.
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # Pin these to commit SHAs before the talk.
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: ko-build/setup-ko@v0.9      # sets KO_DOCKER_REPO=ghcr.io/<owner>/<repo> and logs in
+      - uses: sigstore/cosign-installer@v3
+
+      - name: Build + push (reproducible)
+        id: build
+        run: |
+          IMG=$(ko build ./cmd/app --bare --tags release --sbom=none)
+          echo "image=$IMG" >> "$GITHUB_OUTPUT"
+
+      - name: Sign keyless (ephemeral key -> Fulcio cert -> Rekor entry)
+        # cosign v3 defaults to the new Sigstore bundle format. Either match your
+        # Kyverno attestor type (SigstoreBundle) or force the classic format as here.
+        # Whatever you pick, use the same thing you run at Sabi.
+        run: |
+          cosign sign --yes \
+            --new-bundle-format=false --use-signing-config=false \
+            "${{ steps.build.outputs.image }}"
+
+      - run: echo "Signed \`${{ steps.build.outputs.image }}\`" >> "$GITHUB_STEP_SUMMARY"

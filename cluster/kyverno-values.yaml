@@ -1,0 +1,11 @@
+# helm install kyverno kyverno/kyverno -n kyverno --create-namespace -f cluster/kyverno-values.yaml
+admissionController:
+  container:
+    extraArgs:
+      # Turn off the verification cache so the re-signed image is checked again on
+      # stage instead of hitting a cached result. Leave it on in production.
+      imageVerifyCacheEnabled: false
+features:
+  policyExceptions:
+    enabled: true
+    namespace: kyverno-exceptions

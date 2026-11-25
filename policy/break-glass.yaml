@@ -1,0 +1,24 @@
+# Emergency deploy when the policy says no.
+# Narrow (one namespace, name prefix), labelled with the incident, and it
+# deletes itself: the cleanup.kyverno.io/ttl label makes Kyverno's cleanup
+# controller remove it (that controller needs RBAC to delete PolicyExceptions).
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: break-glass-inc-1234
+  namespace: kyverno-exceptions
+  labels:
+    cleanup.kyverno.io/ttl: 2h
+  annotations:
+    incident: INC-1234
+    approved-by: on-call-sre
+spec:
+  exceptions:
+    - policyName: require-release-workflow
+      ruleNames: [signed-by-release-workflow]
+  match:
+    any:
+      - resources:
+          kinds: [Pod]
+          namespaces: [demo]
+          names: ["hotfix-*"]

@@ -1,0 +1,33 @@
+# THE "ATTACKER". Stands in for: a stolen PAT that can add a workflow, a
+# compromised maintainer, or "any workflow" in the org. Same source, same build,
+# same digest, a perfectly valid Sigstore signature with a Rekor entry.
+# Only the certificate identity is different:
+#   .../.github/workflows/ci-debug.yaml@refs/heads/main   (trigger: workflow_dispatch)
+name: ci-debug
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  sneaky:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: ko-build/setup-ko@v0.9
+      - uses: sigstore/cosign-installer@v3
+      - id: build
+        run: |
+          IMG=$(ko build ./cmd/app --bare --tags debug --sbom=none)
+          echo "image=$IMG" >> "$GITHUB_OUTPUT"
+      - run: |
+          cosign sign --yes \
+            --new-bundle-format=false --use-signing-config=false \
+            "${{ steps.build.outputs.image }}"
+      - run: echo "Signed \`${{ steps.build.outputs.image }}\`" >> "$GITHUB_STEP_SUMMARY"
