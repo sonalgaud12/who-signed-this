@@ -2,7 +2,7 @@
 # That is what lets the demo show ONE digest signed by two different workflows.
 # Pin the base by digest, or the two builds will drift apart.
 #   crane digest cgr.dev/chainguard/static:latest
-defaultBaseImage: cgr.dev/chainguard/static@
+defaultBaseImage: cgr.dev/chainguard/static@sha256:599c3cd7597b84aa149c4282beecc8c6d4e1cb5c95dc8d982e70cd0a2a9147a2
 defaultPlatforms:
   - linux/amd64
   - linux/arm64
