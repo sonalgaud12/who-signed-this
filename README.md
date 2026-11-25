@@ -39,8 +39,8 @@ is admitted. The only difference is which workflow produced the signature.
 | Certificate field | Policy value | It proves... |
 |---|---|---|
 | Issuer | `https://token.actions.githubusercontent.com` | the identity came from GitHub Actions, not someone's laptop |
-| Subject | `https://github.com/OWNER/signed-is-not-enough/.github/workflows/release.yaml@refs/heads/main` | **which workflow file**, in **which repo**, at **which ref** |
-| `githubWorkflowRepository` | `OWNER/signed-is-not-enough` | the run happened in this repo, not in a fork |
+| Subject | `https://github.com/sonalgaud12/who-signed-this/.github/workflows/release.yaml@refs/heads/main` | **which workflow file**, in **which repo**, at **which ref** |
+| `githubWorkflowRepository` | `sonalgaud12/who-signed-this` | the run happened in this repo, not in a fork |
 | `githubWorkflowTrigger` | `push` | it wasn't started by hand (`workflow_dispatch`) |
 | `githubWorkflowRef` | `refs/heads/main` | it was built from the protected branch |
 
@@ -72,7 +72,7 @@ Windows line endings and you'll get `bad interpreter` errors. PowerShell and Git
 Replace `OWNER` with your GitHub username or org everywhere it appears:
 
 ```bash
-grep -rl 'OWNER/REPO\|OWNER/signed-is-not-enough' . | xargs sed -i.bak 's#OWNER/REPO#YOUR_USER/signed-is-not-enough#g; s#OWNER/signed-is-not-enough#YOUR_USER/signed-is-not-enough#g'
+grep -rl 'sonalgaud12/who-signed-this\|sonalgaud12/who-signed-this' . | xargs sed -i.bak 's#sonalgaud12/who-signed-this#sonalgaud12/who-signed-this#g; s#sonalgaud12/who-signed-this#sonalgaud12/who-signed-this#g'
 find . -name '*.bak' -delete
 ```
 
@@ -125,11 +125,11 @@ gh run watch "$(gh run list -w ci-debug -L1 --json databaseId -q '.[0].databaseI
 # copy the image digest from the run summary
 
 # 3. (optional) an unsigned image for the break-glass step
-KO_DOCKER_REPO=ghcr.io/YOUR_USER/signed-is-not-enough ko build ./cmd/app --bare --tags hotfix
+KO_DOCKER_REPO=ghcr.io/sonalgaud12/who-signed-this ko build ./cmd/app --bare --tags hotfix
 
 # 4. Go
-export IMG=ghcr.io/YOUR_USER/signed-is-not-enough@sha256:...
-export REPO=YOUR_USER/signed-is-not-enough
+export IMG=ghcr.io/sonalgaud12/who-signed-this@sha256:...
+export REPO=sonalgaud12/who-signed-this
 export BRANCH=demo-1
 ./demo.sh
 ```

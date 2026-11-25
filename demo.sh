@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Live demo driver. Press Enter to advance. Each command is shown before it runs.
-#   export IMG=ghcr.io/OWNER/REPO@sha256:...   # digest from the ci-debug run (staged before the talk)
-#   export REPO=OWNER/REPO
+#   export IMG=ghcr.io/sonalgaud12/who-signed-this@sha256:...   # digest from the ci-debug run (staged before the talk)
+#   export REPO=sonalgaud12/who-signed-this
 set -uo pipefail
 #   export BRANCH=demo-7                        # branch ci-debug ran on
 : "${IMG:?set IMG to the image digest}" "${REPO:?set REPO=owner/repo}" "${BRANCH:?set BRANCH}"

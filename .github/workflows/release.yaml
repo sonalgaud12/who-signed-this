@@ -1,5 +1,5 @@
 # THE TRUSTED PATH. The only identity the Kyverno policy accepts:
-#   https://github.com/OWNER/REPO/.github/workflows/release.yaml@refs/heads/main
+#   https://github.com/sonalgaud12/who-signed-this/.github/workflows/release.yaml@refs/heads/main
 #   issued by https://token.actions.githubusercontent.com, trigger = push
 name: release
 on:
