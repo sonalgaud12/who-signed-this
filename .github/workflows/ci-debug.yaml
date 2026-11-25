@@ -28,6 +28,5 @@ jobs:
           echo "image=$IMG" >> "$GITHUB_OUTPUT"
       - run: |
           cosign sign --yes \
-            --new-bundle-format=false --use-signing-config=false \
             "${{ steps.build.outputs.image }}"
       - run: echo "Signed \`${{ steps.build.outputs.image }}\`" >> "$GITHUB_STEP_SUMMARY"
